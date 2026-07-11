@@ -91,6 +91,32 @@ export type InvestmentTransaction = {
   name: string | null
 }
 
+export type SpendingSummary = {
+  month: string
+  total_spending: number
+  by_category: { category_id: number | null; category_name: string; amount: number }[]
+}
+
+export type SpendingTrendPoint = { month: string; total: number }
+
+export type BudgetTarget = {
+  id: number
+  category_id: number
+  category_name: string
+  month: string | null
+  target_amount: number
+  active: boolean
+}
+
+export type BudgetProgress = {
+  id: number
+  category_id: number
+  category_name: string
+  target_amount: number
+  actual_amount: number
+  pct_used: number | null
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, {
     headers: { 'Content-Type': 'application/json' },
@@ -130,4 +156,20 @@ export const api = {
   holdings: () => request<Holding[]>('/api/investments/holdings'),
   performance: () => request<Performance>('/api/investments/performance'),
   investmentTransactions: () => request<InvestmentTransaction[]>('/api/investments/transactions'),
+  spendingSummary: (month?: string) =>
+    request<SpendingSummary>(`/api/spending/summary${month ? `?month=${month}` : ''}`),
+  spendingTrend: (months = 6) => request<SpendingTrendPoint[]>(`/api/spending/trend?months=${months}`),
+  budgetTargets: () => request<BudgetTarget[]>('/api/budget-targets'),
+  createBudgetTarget: (category_id: number, target_amount: number) =>
+    request<BudgetTarget>('/api/budget-targets', {
+      method: 'POST',
+      body: JSON.stringify({ category_id, target_amount }),
+    }),
+  updateBudgetTarget: (id: number, target_amount: number) =>
+    request<BudgetTarget>(`/api/budget-targets/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ target_amount }),
+    }),
+  budgetProgress: (month?: string) =>
+    request<BudgetProgress[]>(`/api/budget-targets/progress${month ? `?month=${month}` : ''}`),
 }

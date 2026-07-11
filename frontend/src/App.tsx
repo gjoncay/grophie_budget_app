@@ -4,6 +4,7 @@ import Accounts from './pages/Accounts'
 import Dashboard from './pages/Dashboard'
 import Investments from './pages/Investments'
 import Settings from './pages/Settings'
+import Targets from './pages/Targets'
 import Transactions from './pages/Transactions'
 
 const NAV_ITEMS = [
@@ -11,6 +12,7 @@ const NAV_ITEMS = [
   { to: '/accounts', label: 'Accounts' },
   { to: '/investments', label: 'Investments' },
   { to: '/transactions', label: 'Transactions' },
+  { to: '/targets', label: 'Targets' },
   { to: '/settings', label: 'Settings' },
 ]
 
@@ -31,6 +33,7 @@ function App() {
           <Route path="/accounts" element={<Accounts />} />
           <Route path="/investments" element={<Investments />} />
           <Route path="/transactions" element={<Transactions />} />
+          <Route path="/targets" element={<Targets />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>
       </main>

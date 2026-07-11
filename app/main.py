@@ -4,7 +4,16 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from app import config
-from app.routers import accounts, categories, dashboard, investments, plaid, transactions
+from app.routers import (
+    accounts,
+    budget_targets,
+    categories,
+    dashboard,
+    investments,
+    plaid,
+    spending,
+    transactions,
+)
 
 app = FastAPI(title="Hearth")
 app.include_router(plaid.router)
@@ -13,6 +22,8 @@ app.include_router(transactions.router)
 app.include_router(categories.router)
 app.include_router(dashboard.router)
 app.include_router(investments.router)
+app.include_router(spending.router)
+app.include_router(budget_targets.router)
 
 
 @app.get("/api/health")
