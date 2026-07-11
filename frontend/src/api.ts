@@ -40,6 +40,21 @@ export type Transaction = {
   is_manually_recategorized: boolean
 }
 
+export type NetWorthPoint = {
+  date: string
+  net_worth: number
+  total_assets: number
+  total_liabilities: number
+}
+
+export type AccountsSummary = {
+  net_worth: number
+  total_assets: number
+  total_liabilities: number
+  as_of: string | null
+  accounts: Account[]
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, {
     headers: { 'Content-Type': 'application/json' },
@@ -73,4 +88,7 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify({ category_id, apply_to_future }),
     }),
+  netWorthHistory: () => request<NetWorthPoint[]>('/api/networth/history'),
+  accountsSummary: () => request<AccountsSummary>('/api/accounts/summary'),
+  insight: () => request<{ message: string }>('/api/insights'),
 }

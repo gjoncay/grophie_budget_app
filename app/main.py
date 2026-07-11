@@ -4,13 +4,14 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from app import config
-from app.routers import accounts, categories, plaid, transactions
+from app.routers import accounts, categories, dashboard, plaid, transactions
 
 app = FastAPI(title="Hearth")
 app.include_router(plaid.router)
 app.include_router(accounts.router)
 app.include_router(transactions.router)
 app.include_router(categories.router)
+app.include_router(dashboard.router)
 
 
 @app.get("/api/health")
