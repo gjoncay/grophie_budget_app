@@ -1,22 +1,40 @@
-import { useEffect, useState } from 'react'
+import { NavLink, Route, Routes } from 'react-router-dom'
 import './App.css'
+import Accounts from './pages/Accounts'
+import Dashboard from './pages/Dashboard'
+import Investments from './pages/Investments'
+import Settings from './pages/Settings'
+import Transactions from './pages/Transactions'
+
+const NAV_ITEMS = [
+  { to: '/', label: 'Dashboard' },
+  { to: '/accounts', label: 'Accounts' },
+  { to: '/investments', label: 'Investments' },
+  { to: '/transactions', label: 'Transactions' },
+  { to: '/settings', label: 'Settings' },
+]
 
 function App() {
-  const [apiStatus, setApiStatus] = useState<'checking' | 'ok' | 'down'>('checking')
-
-  useEffect(() => {
-    fetch('/api/health')
-      .then((res) => res.json())
-      .then((data) => setApiStatus(data.status === 'ok' ? 'ok' : 'down'))
-      .catch(() => setApiStatus('down'))
-  }, [])
-
   return (
-    <main className="shell">
-      <h1>Hearth</h1>
-      <p>Phase 0 scaffold — dashboard, accounts, and investments screens come next.</p>
-      <p>API: {apiStatus}</p>
-    </main>
+    <div className="shell">
+      <nav className="nav">
+        <span className="brand">Hearth</span>
+        {NAV_ITEMS.map((item) => (
+          <NavLink key={item.to} to={item.to} end={item.to === '/'}>
+            {item.label}
+          </NavLink>
+        ))}
+      </nav>
+      <main className="content">
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/accounts" element={<Accounts />} />
+          <Route path="/investments" element={<Investments />} />
+          <Route path="/transactions" element={<Transactions />} />
+          <Route path="/settings" element={<Settings />} />
+        </Routes>
+      </main>
+    </div>
   )
 }
 
