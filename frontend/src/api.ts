@@ -11,11 +11,16 @@ export type Account = {
   institution_name: string
 }
 
-type PlaidItem = {
+export type PlaidItem = {
   id: number
   institution_name: string
   status: string
   last_synced_at: string | null
+}
+
+export type BackupStatus = {
+  backups: { filename: string; created_at: string; size_bytes: number }[]
+  last_backup_at: string | null
 }
 
 export type Category = {
@@ -172,4 +177,8 @@ export const api = {
     }),
   budgetProgress: (month?: string) =>
     request<BudgetProgress[]>(`/api/budget-targets/progress${month ? `?month=${month}` : ''}`),
+  syncItem: (itemId: number) =>
+    request<Record<string, number>>(`/api/plaid/items/${itemId}/sync`, { method: 'POST' }),
+  backupStatus: () => request<BackupStatus>('/api/backup/status'),
+  runBackup: () => request<{ ok: boolean; path: string | null }>('/api/backup/run', { method: 'POST' }),
 }

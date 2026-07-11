@@ -1,33 +1,81 @@
 .shell {
-  font-family: system-ui, sans-serif;
-  max-width: 960px;
+  max-width: 980px;
   margin: 0 auto;
 }
 
 .nav {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1.5rem;
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid #ddd;
 }
 
 .nav .brand {
-  font-weight: 700;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.2rem;
   margin-right: 1rem;
+  color: var(--moss);
 }
 
 .nav a {
-  color: inherit;
+  color: var(--ink-muted);
   text-decoration: none;
+  font-weight: 500;
 }
 
 .nav a.active {
+  color: var(--ink);
   font-weight: 600;
 }
 
 .content {
-  padding: 1.5rem;
+  padding: 0.5rem 1.5rem 3rem;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 1.25rem;
+}
+
+.card-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.hero-number {
+  font-family: var(--display);
+  font-size: 2.75rem;
+  font-weight: 600;
+  margin: 0.25rem 0;
+}
+
+.pill {
+  display: inline-block;
+  background: var(--clay-tint);
+  color: var(--clay);
+  border: 1px solid var(--clay);
+  border-radius: 999px;
+  padding: 0.5rem 1.1rem;
+  font-weight: 500;
+}
+
+.text-positive {
+  color: var(--moss);
+}
+
+.text-negative {
+  color: var(--brick);
+}
+
+.text-muted {
+  color: var(--ink-muted);
+  font-size: 0.85rem;
 }
 
 table {
@@ -38,6 +86,54 @@ table {
 th,
 td {
   text-align: left;
-  padding: 0.4rem 0.75rem;
-  border-bottom: 1px solid #eee;
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  color: var(--ink-muted);
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+button {
+  background: var(--moss);
+  color: var(--card);
+  border: none;
+  border-radius: 10px;
+  padding: 0.55rem 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+button.btn-secondary {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--border);
+}
+
+input,
+select {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.5rem 0.75rem;
+  background: var(--card);
+  color: var(--ink);
+}
+
+.progress-track {
+  background: var(--border);
+  border-radius: 999px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 8px;
+  border-radius: 999px;
 }

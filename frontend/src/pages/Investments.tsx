@@ -53,18 +53,20 @@ export default function Investments() {
   return (
     <div>
       <h1>Investments</h1>
-      {error && <p style={{ color: '#C1584A' }}>{error}</p>}
+      {error && <p className="text-negative">{error}</p>}
 
       {holdings.length === 0 ? (
         <p>No investment accounts connected yet.</p>
       ) : (
         <>
           {performance && (
-            <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', marginBottom: '1rem' }}>
+            <div className="card" style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
               <div>
-                <div style={{ fontSize: '0.8rem', color: '#888' }}>Total value</div>
-                <div style={{ fontSize: '1.75rem', fontWeight: 700 }}>{formatMoney(performance.total_value)}</div>
-                <div style={{ color: (performance.total_gain_loss ?? 0) >= 0 ? '#6B8F71' : '#C1584A' }}>
+                <div className="text-muted">Total value</div>
+                <div className="hero-number" style={{ fontSize: '1.9rem' }}>
+                  {formatMoney(performance.total_value)}
+                </div>
+                <div className={(performance.total_gain_loss ?? 0) >= 0 ? 'text-positive' : 'text-negative'}>
                   {formatMoney(performance.total_gain_loss)} ({formatPct(
                     performance.total_cost_basis
                       ? (performance.total_gain_loss ?? 0) / performance.total_cost_basis
@@ -86,68 +88,72 @@ export default function Investments() {
                     ))}
                   </Pie>
                   <Tooltip formatter={(value) => formatMoney(Number(value))} />
-                  <Legend />
+                  <Legend formatter={(value) => <span style={{ color: 'var(--ink)' }}>{value}</span>} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
           )}
 
           <h2>Holdings</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Ticker</th>
-                <th>Name</th>
-                <th>Account</th>
-                <th>Qty</th>
-                <th>Cost basis</th>
-                <th>Value</th>
-                <th>Gain/Loss</th>
-              </tr>
-            </thead>
-            <tbody>
-              {holdings.map((h) => (
-                <tr key={`${h.account_id}-${h.security_id}`}>
-                  <td>{h.ticker_symbol ?? '—'}</td>
-                  <td>{h.name}</td>
-                  <td>{h.account_name}</td>
-                  <td>{h.quantity}</td>
-                  <td>{formatMoney(h.cost_basis)}</td>
-                  <td>{formatMoney(h.value)}</td>
-                  <td style={{ color: (h.gain_loss ?? 0) >= 0 ? '#6B8F71' : '#C1584A' }}>
-                    {formatMoney(h.gain_loss)} ({formatPct(h.gain_loss_pct)})
-                  </td>
+          <div className="card">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ticker</th>
+                  <th>Name</th>
+                  <th>Account</th>
+                  <th>Qty</th>
+                  <th>Cost basis</th>
+                  <th>Value</th>
+                  <th>Gain/Loss</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {holdings.map((h) => (
+                  <tr key={`${h.account_id}-${h.security_id}`}>
+                    <td>{h.ticker_symbol ?? '—'}</td>
+                    <td>{h.name}</td>
+                    <td>{h.account_name}</td>
+                    <td>{h.quantity}</td>
+                    <td>{formatMoney(h.cost_basis)}</td>
+                    <td>{formatMoney(h.value)}</td>
+                    <td className={(h.gain_loss ?? 0) >= 0 ? 'text-positive' : 'text-negative'}>
+                      {formatMoney(h.gain_loss)} ({formatPct(h.gain_loss_pct)})
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           <h2>Activity</h2>
           {activity.length === 0 ? (
             <p>No investment transactions yet.</p>
           ) : (
-            <table>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Type</th>
-                  <th>Security</th>
-                  <th>Quantity</th>
-                  <th>Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {activity.map((t) => (
-                  <tr key={t.id}>
-                    <td>{t.date}</td>
-                    <td>{t.type}</td>
-                    <td>{t.ticker_symbol ?? t.security_name ?? t.name}</td>
-                    <td>{t.quantity ?? '—'}</td>
-                    <td>{formatMoney(t.amount)}</td>
+            <div className="card">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Security</th>
+                    <th>Quantity</th>
+                    <th>Amount</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {activity.map((t) => (
+                    <tr key={t.id}>
+                      <td>{t.date}</td>
+                      <td>{t.type}</td>
+                      <td>{t.ticker_symbol ?? t.security_name ?? t.name}</td>
+                      <td>{t.quantity ?? '—'}</td>
+                      <td>{formatMoney(t.amount)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </>
       )}

@@ -26,17 +26,17 @@ function SpendingCharts() {
   if (!summary || summary.by_category.length === 0) return null
 
   return (
-    <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', margin: '1rem 0' }}>
-      <div>
+    <div className="card-row">
+      <div className="card">
         <h2>This month by category</h2>
         <ResponsiveContainer width={320} height={Math.max(120, summary.by_category.length * 32)}>
           <BarChart data={summary.by_category} layout="vertical" margin={{ left: 16 }}>
-            <XAxis type="number" tickFormatter={(v) => formatMoney(v)} tick={{ fontSize: 12, fill: '#888' }} />
+            <XAxis type="number" tickFormatter={(v) => formatMoney(v)} tick={{ fontSize: 12, fill: 'var(--ink-muted)' }} />
             <YAxis
               type="category"
               dataKey="category_name"
               width={120}
-              tick={{ fontSize: 12, fill: '#444' }}
+              tick={{ fontSize: 12, fill: 'var(--ink)' }}
               axisLine={false}
               tickLine={false}
             />
@@ -47,13 +47,13 @@ function SpendingCharts() {
       </div>
 
       {trend.length > 0 && (
-        <div>
+        <div className="card">
           <h2>Last 6 months</h2>
           <ResponsiveContainer width={320} height={180}>
             <BarChart data={trend}>
-              <CartesianGrid vertical={false} stroke="#eee" />
-              <XAxis dataKey="month" tickFormatter={formatMonth} tick={{ fontSize: 12, fill: '#888' }} axisLine={false} tickLine={false} />
-              <YAxis tickFormatter={(v) => formatMoney(v)} tick={{ fontSize: 12, fill: '#888' }} axisLine={false} tickLine={false} width={70} />
+              <CartesianGrid vertical={false} stroke="var(--border)" />
+              <XAxis dataKey="month" tickFormatter={formatMonth} tick={{ fontSize: 12, fill: 'var(--ink-muted)' }} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => formatMoney(v)} tick={{ fontSize: 12, fill: 'var(--ink-muted)' }} axisLine={false} tickLine={false} width={70} />
               <Tooltip formatter={(value) => formatMoney(Number(value))} labelFormatter={(label) => formatMonth(String(label))} />
               <Bar dataKey="total" fill={CLAY} radius={[4, 4, 0, 0]} />
             </BarChart>
@@ -102,7 +102,7 @@ export default function Transactions() {
   return (
     <div>
       <h1>Transactions</h1>
-      {error && <p style={{ color: '#C1584A' }}>{error}</p>}
+      {error && <p className="text-negative">{error}</p>}
 
       <SpendingCharts />
 
@@ -115,57 +115,59 @@ export default function Transactions() {
       {transactions.length === 0 ? (
         <p>No transactions yet — connect an account to backfill some.</p>
       ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Merchant</th>
-              <th>Account</th>
-              <th>Amount</th>
-              <th>Category</th>
-              <th>Remember?</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.map((t) => (
-              <tr key={t.id}>
-                <td>{t.date}</td>
-                <td>
-                  {t.merchant_name ?? t.description}
-                  {t.pending && ' (pending)'}
-                </td>
-                <td>{t.account_name}</td>
-                <td>{formatMoney(t.amount)}</td>
-                <td>
-                  <select
-                    value={t.category_id ?? ''}
-                    onChange={(e) => handleRecategorize(t.id, Number(e.target.value))}
-                  >
-                    <option value="" disabled>
-                      Uncategorized
-                    </option>
-                    {categories.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                  {savedRowId === t.id && ' ✓'}
-                </td>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={rememberByRow[t.id] ?? true}
-                    onChange={(e) =>
-                      setRememberByRow((prev) => ({ ...prev, [t.id]: e.target.checked }))
-                    }
-                    title="Apply this category to future transactions from this merchant"
-                  />
-                </td>
+        <div className="card" style={{ marginTop: '1rem' }}>
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Merchant</th>
+                <th>Account</th>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Remember?</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {transactions.map((t) => (
+                <tr key={t.id}>
+                  <td>{t.date}</td>
+                  <td>
+                    {t.merchant_name ?? t.description}
+                    {t.pending && ' (pending)'}
+                  </td>
+                  <td>{t.account_name}</td>
+                  <td>{formatMoney(t.amount)}</td>
+                  <td>
+                    <select
+                      value={t.category_id ?? ''}
+                      onChange={(e) => handleRecategorize(t.id, Number(e.target.value))}
+                    >
+                      <option value="" disabled>
+                        Uncategorized
+                      </option>
+                      {categories.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+                    {savedRowId === t.id && <span className="text-positive"> ✓</span>}
+                  </td>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={rememberByRow[t.id] ?? true}
+                      onChange={(e) =>
+                        setRememberByRow((prev) => ({ ...prev, [t.id]: e.target.checked }))
+                      }
+                      title="Apply this category to future transactions from this merchant"
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   )

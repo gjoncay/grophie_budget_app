@@ -61,33 +61,35 @@ export default function Accounts() {
       <button onClick={startConnect} disabled={loading}>
         {loading ? 'Connecting…' : 'Connect an account'}
       </button>
-      {error && <p style={{ color: '#C1584A' }}>{error}</p>}
+      {error && <p className="text-negative">{error}</p>}
 
       {accounts.length === 0 ? (
         <p>No accounts connected yet.</p>
       ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Institution</th>
-              <th>Account</th>
-              <th>Type</th>
-              <th>Balance</th>
-            </tr>
-          </thead>
-          <tbody>
-            {accounts.map((a) => (
-              <tr key={a.id}>
-                <td>{a.institution_name}</td>
-                <td>
-                  {a.name} {a.mask && `••${a.mask}`}
-                </td>
-                <td>{a.subtype ?? a.type}</td>
-                <td>{formatMoney(a.current_balance)}</td>
+        <div className="card">
+          <table>
+            <thead>
+              <tr>
+                <th>Institution</th>
+                <th>Account</th>
+                <th>Type</th>
+                <th>Balance</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {accounts.map((a) => (
+                <tr key={a.id}>
+                  <td>{a.institution_name}</td>
+                  <td>
+                    {a.name} {a.mask && `••${a.mask}`}
+                  </td>
+                  <td>{a.subtype ?? a.type}</td>
+                  <td>{formatMoney(a.current_balance)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   )

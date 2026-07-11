@@ -10,7 +10,6 @@ from sqlalchemy import (
     Integer,
     String,
     UniqueConstraint,
-    func,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -55,7 +54,12 @@ class PlaidItem(Base):
     status: Mapped[PlaidItemStatus] = mapped_column(
         String, default=PlaidItemStatus.ACTIVE
     )
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    # Python-side default (not server_default=func.now()) deliberately —
+    # SQLite's CURRENT_TIMESTAMP is UTC, while date.today() elsewhere in
+    # this app (net worth reconstruction, spending months) is local time.
+    # Mixing the two caused the investment-forward-only comparison to
+    # exclude today's balance whenever local and UTC dates differed.
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     last_synced_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     accounts: Mapped[list["Account"]] = relationship(back_populates="item")

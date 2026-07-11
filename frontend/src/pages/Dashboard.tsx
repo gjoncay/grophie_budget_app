@@ -32,8 +32,8 @@ function TrendTooltip({ active, payload }: { active?: boolean; payload?: { paylo
   if (!active || !payload?.length) return null
   const point = payload[0].payload
   return (
-    <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: '0.5rem 0.75rem' }}>
-      <div style={{ color: '#666', fontSize: '0.8rem' }}>{formatDate(point.date)}</div>
+    <div className="card" style={{ padding: '0.5rem 0.75rem', marginBottom: 0 }}>
+      <div className="text-muted">{formatDate(point.date)}</div>
       <div style={{ fontWeight: 600 }}>{formatMoney(point.net_worth)}</div>
     </div>
   )
@@ -64,34 +64,22 @@ export default function Dashboard() {
   return (
     <div>
       <h1>Dashboard</h1>
-      {error && <p style={{ color: '#C1584A' }}>{error}</p>}
+      {error && <p className="text-negative">{error}</p>}
 
-      <p
-        style={{
-          background: '#FBEAE3',
-          color: '#8A3F31',
-          borderRadius: 999,
-          padding: '0.5rem 1rem',
-          display: 'inline-block',
-        }}
-      >
-        {insight || 'Loading…'}
-      </p>
+      <p className="pill">{insight || 'Loading…'}</p>
 
-      <div style={{ fontSize: '2.5rem', fontWeight: 700, margin: '0.5rem 0' }}>
-        {summary ? formatMoney(summary.net_worth) : '—'}
-      </div>
+      <div className="hero-number">{summary ? formatMoney(summary.net_worth) : '—'}</div>
 
       {history.length === 0 ? (
         <p>Connect an account to see your net worth trend.</p>
       ) : (
-        <>
-          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+        <div className="card">
+          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem' }}>
             {RANGES.map((r) => (
               <button
                 key={r.label}
+                className={rangeDays === r.days ? '' : 'btn-secondary'}
                 onClick={() => setRangeDays(r.days)}
-                style={{ fontWeight: rangeDays === r.days ? 700 : 400 }}
               >
                 {r.label}
               </button>
@@ -105,18 +93,18 @@ export default function Dashboard() {
                   <stop offset="100%" stopColor={MOSS} stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid vertical={false} stroke="#eee" />
+              <CartesianGrid vertical={false} stroke="var(--border)" />
               <XAxis
                 dataKey="date"
                 tickFormatter={formatDate}
-                tick={{ fontSize: 12, fill: '#888' }}
+                tick={{ fontSize: 12, fill: 'var(--ink-muted)' }}
                 axisLine={false}
                 tickLine={false}
                 minTickGap={40}
               />
               <YAxis
                 tickFormatter={(v) => formatMoney(v)}
-                tick={{ fontSize: 12, fill: '#888' }}
+                tick={{ fontSize: 12, fill: 'var(--ink-muted)' }}
                 axisLine={false}
                 tickLine={false}
                 width={80}
@@ -133,19 +121,19 @@ export default function Dashboard() {
               />
             </AreaChart>
           </ResponsiveContainer>
-          <p style={{ fontSize: '0.8rem', color: '#888' }}>
+          <p className="text-muted">
             Cash and credit balances are reconstructed from transaction history. Investment
             balances only count from the day each account was connected — see the Investments
             page for details.
           </p>
-        </>
+        </div>
       )}
 
       {summary && summary.accounts.length > 0 && (
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
+        <div className="card-row">
           {summary.accounts.map((a) => (
-            <div key={a.id} style={{ border: '1px solid #eee', borderRadius: 12, padding: '0.75rem 1rem' }}>
-              <div style={{ fontSize: '0.8rem', color: '#888' }}>{a.institution_name}</div>
+            <div key={a.id} className="card" style={{ minWidth: 180 }}>
+              <div className="text-muted">{a.institution_name}</div>
               <div>{a.name}</div>
               <div style={{ fontWeight: 600 }}>
                 {a.current_balance !== null ? formatMoney(a.current_balance) : '—'}

@@ -1,0 +1,13 @@
+[Unit]
+Description=Hearth household finance tracker
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/chillycholla/Projects/budget_planner
+ExecStart=/home/chillycholla/Projects/budget_planner/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8420
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

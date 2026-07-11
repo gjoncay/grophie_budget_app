@@ -39,12 +39,12 @@ export default function Targets() {
     <div>
       <h1>Budget Targets</h1>
       <p>Optional per-category monthly targets — actual vs. target, not full envelope budgeting.</p>
-      {error && <p style={{ color: '#C1584A' }}>{error}</p>}
+      {error && <p className="text-negative">{error}</p>}
 
       {progress.length === 0 ? (
         <p>No targets set yet.</p>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxWidth: 480 }}>
+        <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', maxWidth: 480 }}>
           {progress.map((p) => {
             const pct = Math.min(p.pct_used ?? 0, 1)
             const over = (p.pct_used ?? 0) > 1
@@ -56,13 +56,12 @@ export default function Targets() {
                     {formatMoney(p.actual_amount)} / {formatMoney(p.target_amount)}
                   </span>
                 </div>
-                <div style={{ background: '#eee', borderRadius: 999, height: 8 }}>
+                <div className="progress-track">
                   <div
+                    className="progress-fill"
                     style={{
-                      background: over ? '#C1584A' : '#6B8F71',
+                      background: over ? 'var(--brick)' : 'var(--moss)',
                       width: `${pct * 100}%`,
-                      height: 8,
-                      borderRadius: 999,
                     }}
                   />
                 </div>
@@ -73,7 +72,7 @@ export default function Targets() {
       )}
 
       <h2>Add a target</h2>
-      <form onSubmit={handleCreate} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+      <form onSubmit={handleCreate} className="card" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', width: 'fit-content' }}>
         <select value={categoryId} onChange={(e) => setCategoryId(Number(e.target.value))}>
           <option value="">Select category…</option>
           {categories.map((c) => (
