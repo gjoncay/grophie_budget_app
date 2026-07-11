@@ -110,6 +110,7 @@ export default function Transactions() {
         placeholder="Search merchant or description…"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
+        style={{ width: '100%', maxWidth: 360 }}
       />
 
       {transactions.length === 0 ? (

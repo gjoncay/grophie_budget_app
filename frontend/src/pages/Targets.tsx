@@ -86,6 +86,7 @@ export default function Targets() {
           placeholder="Monthly target"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
+          style={{ width: 140 }}
         />
         <button type="submit">Add</button>
       </form>
