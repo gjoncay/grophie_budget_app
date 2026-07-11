@@ -1,0 +1,19 @@
+# secrets & local data — never commit real financial data or credentials
+.env
+data/
+backups/
+*.db
+*.db-*
+
+# python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+
+# node / frontend
+node_modules/
+frontend/dist/
+
+# editor/OS
+.DS_Store
