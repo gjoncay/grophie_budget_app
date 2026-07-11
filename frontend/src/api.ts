@@ -55,6 +55,42 @@ export type AccountsSummary = {
   accounts: Account[]
 }
 
+export type Holding = {
+  account_id: number
+  account_name: string
+  security_id: number
+  ticker_symbol: string | null
+  name: string | null
+  security_type: string | null
+  quantity: number
+  cost_basis: number | null
+  value: number | null
+  gain_loss: number | null
+  gain_loss_pct: number | null
+  as_of: string
+}
+
+export type Performance = {
+  allocation: Record<string, number>
+  total_value: number
+  total_cost_basis: number
+  total_gain_loss: number | null
+}
+
+export type InvestmentTransaction = {
+  id: number
+  account_id: number
+  account_name: string
+  security_name: string | null
+  ticker_symbol: string | null
+  date: string
+  type: string
+  quantity: number | null
+  price: number | null
+  amount: number
+  name: string | null
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, {
     headers: { 'Content-Type': 'application/json' },
@@ -91,4 +127,7 @@ export const api = {
   netWorthHistory: () => request<NetWorthPoint[]>('/api/networth/history'),
   accountsSummary: () => request<AccountsSummary>('/api/accounts/summary'),
   insight: () => request<{ message: string }>('/api/insights'),
+  holdings: () => request<Holding[]>('/api/investments/holdings'),
+  performance: () => request<Performance>('/api/investments/performance'),
+  investmentTransactions: () => request<InvestmentTransaction[]>('/api/investments/transactions'),
 }

@@ -172,6 +172,7 @@ class InvestmentTransaction(Base):
     __tablename__ = "investment_transactions"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    plaid_investment_transaction_id: Mapped[str] = mapped_column(String, unique=True)
     account_id: Mapped[int] = mapped_column(ForeignKey("accounts.id"))
     security_id: Mapped[int | None] = mapped_column(
         ForeignKey("securities.id"), nullable=True

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from app import networth, plaid_client, security, sync
+from app import investments, networth, plaid_client, security, sync
 from app.db import get_db
 from app.models import Account, PlaidItem
 
@@ -46,6 +46,7 @@ def exchange(body: ExchangeRequest, db: Session = Depends(get_db)):
     # Backfill whatever transaction history Plaid has for this item right
     # away, so the Transactions/Dashboard screens aren't empty after connecting.
     backfill = sync.sync_item_transactions(db, item)
+    investments.sync_item_investments(db, item)
     networth.recompute_net_worth_history(db)
 
     return {
@@ -63,10 +64,11 @@ def sync_item(item_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Item not found")
     try:
         result = sync.sync_item_transactions(db, item)
+        investment_result = investments.sync_item_investments(db, item)
     except plaid_client.PlaidNotConfigured as e:
         raise HTTPException(status_code=503, detail=str(e))
     networth.recompute_net_worth_history(db)
-    return result
+    return {**result, **investment_result}
 
 
 @router.get("/items")
