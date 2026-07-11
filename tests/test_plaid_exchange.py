@@ -44,6 +44,11 @@ def test_exchange_creates_item_and_accounts(client, db_session, monkeypatch):
         "get_accounts",
         lambda access_token: (FAKE_ACCOUNTS, "Fake Bank"),
     )
+    monkeypatch.setattr(
+        plaid_client,
+        "sync_transactions",
+        lambda access_token, cursor: {"added": [], "modified": [], "removed": [], "cursor": None},
+    )
 
     response = client.post("/api/plaid/exchange", json={"public_token": "public-sandbox-xyz"})
     assert response.status_code == 200
@@ -73,6 +78,11 @@ def test_accounts_endpoint_returns_stored_accounts(client, db_session, monkeypat
         plaid_client,
         "get_accounts",
         lambda access_token: (FAKE_ACCOUNTS[:1], "Fake Bank"),
+    )
+    monkeypatch.setattr(
+        plaid_client,
+        "sync_transactions",
+        lambda access_token, cursor: {"added": [], "modified": [], "removed": [], "cursor": None},
     )
     client.post("/api/plaid/exchange", json={"public_token": "public-sandbox-xyz"})
 

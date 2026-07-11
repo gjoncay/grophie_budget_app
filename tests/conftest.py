@@ -5,6 +5,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.db import Base, get_db
 from app.main import app
+from app.seed_categories import seed as seed_categories
 
 
 @pytest.fixture
@@ -17,6 +18,7 @@ def db_session():
     Base.metadata.create_all(engine)
     TestSession = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
     session = TestSession()
+    seed_categories(session)
     yield session
     session.close()
 

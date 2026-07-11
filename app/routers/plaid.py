@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from app import plaid_client, security
+from app import plaid_client, security, sync
 from app.db import get_db
 from app.models import Account, PlaidItem
 
@@ -41,13 +41,29 @@ def exchange(body: ExchangeRequest, db: Session = Depends(get_db)):
 
     for account in accounts:
         db.add(Account(item_id=item.id, **account))
-    db.commit()
+    db.flush()
+
+    # Backfill whatever transaction history Plaid has for this item right
+    # away, so the Transactions/Dashboard screens aren't empty after connecting.
+    backfill = sync.sync_item_transactions(db, item)
 
     return {
         "item_id": item.id,
         "institution_name": item.institution_name,
         "accounts_added": len(accounts),
+        "transactions_added": backfill["added"],
     }
+
+
+@router.post("/items/{item_id}/sync")
+def sync_item(item_id: int, db: Session = Depends(get_db)):
+    item = db.get(PlaidItem, item_id)
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    try:
+        return sync.sync_item_transactions(db, item)
+    except plaid_client.PlaidNotConfigured as e:
+        raise HTTPException(status_code=503, detail=str(e))
 
 
 @router.get("/items")

@@ -18,6 +18,28 @@ type PlaidItem = {
   last_synced_at: string | null
 }
 
+export type Category = {
+  id: number
+  name: string
+  group: string | null
+  parent_category_id: number | null
+  is_custom: boolean
+}
+
+export type Transaction = {
+  id: number
+  account_id: number
+  account_name: string
+  date: string
+  amount: number
+  merchant_name: string | null
+  description: string | null
+  category_id: number | null
+  category_name: string | null
+  pending: boolean
+  is_manually_recategorized: boolean
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, {
     headers: { 'Content-Type': 'application/json' },
@@ -43,4 +65,12 @@ export const api = {
     ),
   removeItem: (itemId: number) =>
     request<{ ok: boolean }>(`/api/plaid/items/${itemId}`, { method: 'DELETE' }),
+  categories: () => request<Category[]>('/api/categories'),
+  transactions: (search?: string) =>
+    request<Transaction[]>(`/api/transactions${search ? `?search=${encodeURIComponent(search)}` : ''}`),
+  recategorize: (transactionId: number, category_id: number, apply_to_future: boolean) =>
+    request<Transaction & { rule_created: boolean }>(`/api/transactions/${transactionId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ category_id, apply_to_future }),
+    }),
 }

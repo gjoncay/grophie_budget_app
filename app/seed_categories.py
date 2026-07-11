@@ -6,6 +6,8 @@ Phase 3, since Plaid's full detailed taxonomy runs to ~100+ values and
 guessing at labels without real transaction data isn't worth it.
 """
 
+from sqlalchemy.orm import Session
+
 from app.db import SessionLocal
 from app.models import Category
 
@@ -29,14 +31,18 @@ PRIMARY_CATEGORIES = [
 ]
 
 
+def seed(db: Session) -> None:
+    existing_groups = {c.group for c in db.query(Category).all()}
+    for group, name in PRIMARY_CATEGORIES:
+        if group in existing_groups:
+            continue
+        db.add(Category(name=name, group=group, is_custom=False))
+    db.commit()
+
+
 def seed_categories() -> None:
     with SessionLocal() as db:
-        existing_groups = {c.group for c in db.query(Category).all()}
-        for group, name in PRIMARY_CATEGORIES:
-            if group in existing_groups:
-                continue
-            db.add(Category(name=name, group=group, is_custom=False))
-        db.commit()
+        seed(db)
 
 
 if __name__ == "__main__":
